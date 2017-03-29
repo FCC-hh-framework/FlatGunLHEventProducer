@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 #################################################################################################
 #
+# Requires python v2.7
+#
 # Simple script for generation of a LHE file containing events distributed with a flat (log)pt and eta spectrum.
 #
 # For help type:
@@ -109,18 +111,18 @@ def write_gg2gg(args, pt, eta, phi):
 if __name__=="__main__":
     
     parser = argparse.ArgumentParser()
-    parser.add_argument("--process", help='process to be generated. Available: qq2qq/gg2gg', default='qq2qq')
-    parser.add_argument("--ptmin", type=float, help="minimum pt [GeV]", default=1.)
-    parser.add_argument("--ptmax", type=float, help="maximum pt [GeV]", default=50000.)
-    parser.add_argument("--etamin", type=float, help="minimum eta", default=-6.)
-    parser.add_argument("--etamax", type=float, help="maximum eta", default=6.)
-    parser.add_argument("--ecm,", dest='ecm', type=float, help="center of mass energy", default=13000)
-    parser.add_argument("--N", type=int, help="number of events to generate", default=1000)
-    parser.add_argument("--seed", type=int, help="random seed", default=0)
-    parser.add_argument('--log', dest='log', help="flat in log pt", action='store_true')
-    parser.add_argument('--nolog', dest='log', help="flat in pt", action='store_false')
-    parser.set_defaults(flatlog=True)
-    parser.add_argument("--output", help="output LHE file", default='events.lhe')
+    parser.add_argument("--process", help='available: qq2qq/gg2gg (default: qq2qq)', default='qq2qq')
+    parser.add_argument("--ptmin", type=float, help="minimum pt [GeV] (default: 1.)", default=1.)
+    parser.add_argument("--ptmax", type=float, help="maximum pt [GeV] (default: 50000.)", default=50000.)
+    parser.add_argument("--etamin", type=float, help="minimum eta (default: 6.)", default=-6.)
+    parser.add_argument("--etamax", type=float, help="maximum eta (default: 6.)", default=6.)
+    parser.add_argument("--ecm,", dest='ecm', type=float, help="center of mass energy (default: 13000)", default=13000)
+    parser.add_argument("--N", type=int, help="number of events to generate (default: 1000)", default=1000)
+    parser.add_argument("--seed", type=int, help="random seed (default: 0)", default=0)
+    parser.add_argument('--log', dest='log', help="flat in log pt (default: yes)", action='store_true')
+    parser.add_argument('--nolog', dest='log', help="flat in pt (default: false)", action='store_false')
+    parser.set_defaults(log=True)
+    parser.add_argument("--output", help="output LHE file (default: events.lhe)", default='events.lhe')
 
     args = parser.parse_args()
     
@@ -141,8 +143,8 @@ if __name__=="__main__":
     # start event loop
     for i in range(args.N):
        
-       if i%1000 == 0:
-           print 'Processed {} events'.format(i)
+       if (i+1)%1000 == 0:
+           print ' ... processed {} events ...'.format(i+1)
        
        phi = random.uniform(0., math.pi)
        eta = random.uniform(args.etamin, args.etamax)
