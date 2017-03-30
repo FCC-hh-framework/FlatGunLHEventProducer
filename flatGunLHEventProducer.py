@@ -131,31 +131,31 @@ if __name__=="__main__":
 
     print 'Start event generation ...'
     
+    ebeam = args.ecm/2.
+    count = 0
+
     # start event loop
-    for i in range(args.N):
+    while count < args.N:
        
-       if (i+1)%1000 == 0:
-           print ' ... processed {} events ...'.format(i+1)
+       if (count+1)%1000 == 0:
+           print ' ... processed {} events ...'.format(count+1)
        
        phi = random.uniform(0., math.pi)
        eta = random.uniform(args.etamin, args.etamax)
-
+          
        # flat in pt or in logpt
        if args.log:
           pt = math.pow(10, random.uniform(math.log10(args.ptmin), math.log10(args.ptmax)))
        else:
           pt = random.uniform(args.ptmin, args.ptmax)
-       
+
        # generating "balanced" collision, i.e x1 = x2 = 2*energy/sqrt(s)
-       ebeam = args.ecm/2.
        e = pt*math.cosh(eta)
-    
-       # reject events that violate energy conservation
-       if e > ebeam:
-          continue
 
        # write event corresponding to required process
-       write_event(args, pt, eta, phi)
+       if e < ebeam/2.:
+          write_event(args, pt, eta, phi)
+          count += 1
 
     print ''
     print 'Event generation completed.'
