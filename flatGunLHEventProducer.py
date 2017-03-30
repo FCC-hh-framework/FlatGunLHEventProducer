@@ -137,9 +137,6 @@ if __name__=="__main__":
     # start event loop
     while count < args.N:
        
-       if (count+1)%1000 == 0:
-           print ' ... processed {} events ...'.format(count+1)
-       
        phi = random.uniform(0., math.pi)
        eta = random.uniform(args.etamin, args.etamax)
           
@@ -156,6 +153,8 @@ if __name__=="__main__":
        if e < ebeam/2.:
           write_event(args, pt, eta, phi)
           count += 1
+          if (count+1)%1000 == 0:
+             print ' ... processed {} events ...'.format(count+1)
 
     print ''
     print 'Event generation completed.'
