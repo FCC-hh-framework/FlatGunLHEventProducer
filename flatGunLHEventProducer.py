@@ -10,10 +10,7 @@
 #
 #################################################################################################
 
-import os
-import random
-import math
-import argparse
+import os, random, math, argparse, sys
 
 def print_params(args):
 
@@ -39,16 +36,9 @@ def write_init(args):
     out.write('</init>\n')
     out.close()
 
-def write_qq2qq(args, pt, eta, phi):
+def write_event(args, pt, eta, phi):
 
-    # generating "balanced" collision, i.e x1 = x2 = 2*energy/sqrt(s)
-
-    ebeam = args.ecm/2.
     e = pt*math.cosh(eta)
-    
-    # reject events that violate energy conservation
-    if e > ebeam:
-       return
 
     # compute particles 4-vectors (for massless particles): px, py, pz, e
     
@@ -57,61 +47,56 @@ def write_qq2qq(args, pt, eta, phi):
     p3 = [pt*math.cos(phi), pt*math.sin(phi), pt*math.sinh(eta), e]
     p4 = [- pt*math.cos(phi), - pt*math.sin(phi), - pt*math.sinh(eta), e]
 
-    cf_list = []
-    cf_list.append([501, 501, 502, 502])
-    cf_list.append([501, 502, 501, 502])
-
-    color = cf_list[random.randint(0, 1)]
-
-    out = open(args.output, "a")
-    out.write('<event>\n')
-    out.write(' 4      1 +1000. {:.8e} 0.78186083E-02 0.11800000E+00\n'.format(2*e))
-    out.write('        1 -1    0    0  {}    0 {:+.8e} {:+.8e} {:+.8e} {:.8e} {:.8e} 0.0000e+00 1.0000e+00\n'.format(color[0], p1[0], p1[1], p1[2], p1[3], 0.))
-    out.write('       -1 -1    0    0  0    {} {:+.8e} {:+.8e} {:+.8e} {:.8e} {:.8e} 0.0000e+00 -1.0000e+00\n'.format(color[1], p2[0], p2[1], p2[2], p2[3], 0.))
-    out.write('        1  1    1    2  {}    0 {:+.8e} {:+.8e} {:+.8e} {:.8e} {:.8e} 0.0000e+00 1.0000e+00\n'.format(color[2], p3[0], p3[1], p3[2], p3[3], 0.))
-    out.write('       -1  1    1    2  0    {} {:+.8e} {:+.8e} {:+.8e} {:.8e} {:.8e} 0.0000e+00 -1.0000e+00\n'.format(color[3], p4[0], p4[1], p4[2], p4[3], 0.))
-    out.write('</event>\n')
-
-
-def write_gg2gg(args, pt, eta, phi):
-
-    # generating "balanced" collision, i.e x1 = x2 = 2*energy/sqrt(s)
-
-    ebeam = args.ecm/2.
-    e = pt*math.cosh(eta)
-    
-    # reject events that violate energy conservation
-    if e > ebeam:
-       return
-
-    # compute particles 4-vectors (for massless particles): px, py, pz, e
-    
-    p1 = [0., 0., e, e]
-    p2 = [0., 0., -e, e]
-    p3 = [pt*math.cos(phi), pt*math.sin(phi), pt*math.sinh(eta), e]
-    p4 = [- pt*math.cos(phi), - pt*math.sin(phi), - pt*math.sinh(eta), e]
+    if args.pdg == 21:
+       pdg = 0
+    else: 
+       pdg = args.pdg
 
     cf_list = []
-    cf_list.append([503, 501, 504, 502, 503, 502, 504, 501])
-    cf_list.append([504, 501, 503, 502, 503, 501, 504, 502])
 
-    color = cf_list[random.randint(0, 1)]
+    ########## quarks
+    if pdg > 0:
 
-    out = open(args.output, "a")
-    out.write('<event>\n')
-    out.write(' 4      1 +1000. {:.8e} 0.78186083E-02 0.11800000E+00\n'.format(2*e))
-    out.write('       21 -1    0    0  {}   {} {:+.8e} {:+.8e} {:+.8e} {:.8e} {:.8e} 0.0000e+00 1.0000e+00\n'.format(color[0], color[1], p1[0], p1[1], p1[2], p1[3], 0.))
-    out.write('       21 -1    0    0  {}   {} {:+.8e} {:+.8e} {:+.8e} {:.8e} {:.8e} 0.0000e+00 1.0000e+00\n'.format(color[2], color[3], p2[0], p2[1], p2[2], p2[3], 0.))
-    out.write('       21  1    1    2  {}   {} {:+.8e} {:+.8e} {:+.8e} {:.8e} {:.8e} 0.0000e+00 1.0000e+00\n'.format(color[4], color[5], p3[0], p3[1], p3[2], p3[3], 0.))
-    out.write('       21  1    1    2  {}   {} {:+.8e} {:+.8e} {:+.8e} {:.8e} {:.8e} 0.0000e+00 1.0000e+00\n'.format(color[6], color[7], p4[0], p4[1], p4[2], p4[3], 0.))
-    out.write('</event>\n')
+       cf_list.append([501, 501, 502, 502])
+       cf_list.append([501, 502, 501, 502])
+
+       color = cf_list[random.randint(0, 1)]
+       
+       # assume massless quarks
+       out = open(args.output, "a")
+       out.write('<event>\n')
+       out.write(' 4      1 +1000. {:.8e} 0.78186083E-02 0.11800000E+00\n'.format(2*e))
+       out.write('        1 -1    0    0  {}    0 {:+.8e} {:+.8e} {:+.8e} {:.8e} {:.8e} 0.0000e+00 1.0000e+00\n'.format(color[0], p1[0], p1[1], p1[2], p1[3], 0.))
+       out.write('       -1 -1    0    0  0    {} {:+.8e} {:+.8e} {:+.8e} {:.8e} {:.8e} 0.0000e+00 -1.0000e+00\n'.format(color[1], p2[0], p2[1], p2[2], p2[3], 0.))
+       out.write('        {}  1    1    2  {}    0 {:+.8e} {:+.8e} {:+.8e} {:.8e} {:.8e} 0.0000e+00 1.0000e+00\n'.format(pdg, color[2], p3[0], p3[1], p3[2], p3[3], 0.))
+       out.write('       -{}  1    1    2  0    {} {:+.8e} {:+.8e} {:+.8e} {:.8e} {:.8e} 0.0000e+00 -1.0000e+00\n'.format(pdg, color[3], p4[0], p4[1], p4[2], p4[3], 0.))
+       out.write('</event>\n')
+    
+    ########## gluons
+    else:
+    
+       cf_list.append([503, 501, 504, 502, 503, 502, 504, 501])
+       cf_list.append([504, 501, 503, 502, 503, 501, 504, 502])
+
+       color = cf_list[random.randint(0, 1)]
+
+       out = open(args.output, "a")
+       out.write('<event>\n')
+       out.write(' 4      1 +1000. {:.8e} 0.78186083E-02 0.11800000E+00\n'.format(2*e))
+       out.write('       21 -1    0    0  {}   {} {:+.8e} {:+.8e} {:+.8e} {:.8e} {:.8e} 0.0000e+00 1.0000e+00\n'.format(color[0], color[1], p1[0], p1[1], p1[2], p1[3], 0.))
+       out.write('       21 -1    0    0  {}   {} {:+.8e} {:+.8e} {:+.8e} {:.8e} {:.8e} 0.0000e+00 1.0000e+00\n'.format(color[2], color[3], p2[0], p2[1], p2[2], p2[3], 0.))
+       out.write('       21  1    1    2  {}   {} {:+.8e} {:+.8e} {:+.8e} {:.8e} {:.8e} 0.0000e+00 1.0000e+00\n'.format(color[4], color[5], p3[0], p3[1], p3[2], p3[3], 0.))
+       out.write('       21  1    1    2  {}   {} {:+.8e} {:+.8e} {:+.8e} {:.8e} {:.8e} 0.0000e+00 1.0000e+00\n'.format(color[6], color[7], p4[0], p4[1], p4[2], p4[3], 0.))
+       out.write('</event>\n')
+
+
 
 #__________________________________________________________
 
 if __name__=="__main__":
     
     parser = argparse.ArgumentParser()
-    parser.add_argument("--process", help='available: qq2qq/gg2gg (default: qq2qq)', default='qq2qq')
+    parser.add_argument("--pdg", type=int, help='available: 1/2/3/4/5/21 i.e: [uubar/ddbar/ssbar/ccbar/bbbar/gg] (default: 1)', default='1')
     parser.add_argument("--ptmin", type=float, help="minimum pt [GeV] (default: 1.)", default=1.)
     parser.add_argument("--ptmax", type=float, help="maximum pt [GeV] (default: 50000.)", default=50000.)
     parser.add_argument("--etamin", type=float, help="minimum eta (default: 6.)", default=-6.)
@@ -126,6 +111,12 @@ if __name__=="__main__":
 
     args = parser.parse_args()
     
+    # check if provided pdgCode is allowed
+    allowed_pdgCodes = [1, 2, 3, 4, 5, 21]
+    if args.pdg not in allowed_pdgCodes:
+       print args.pdg ,'Please provide a supported pdgCode : 1, 2, 3, 4, 5 or 21'
+       sys.exit(0)
+       
     # print user-defined parameters
     print_params(args)
     print ''
@@ -155,12 +146,16 @@ if __name__=="__main__":
        else:
           pt = random.uniform(args.ptmin, args.ptmax)
        
+       # generating "balanced" collision, i.e x1 = x2 = 2*energy/sqrt(s)
+       ebeam = args.ecm/2.
+       e = pt*math.cosh(eta)
+    
+       # reject events that violate energy conservation
+       if e > ebeam:
+          continue
+
        # write event corresponding to required process
-       if args.process == 'qq2qq':
-          write_qq2qq(args, pt, eta, phi)
-       if args.process == 'gg2gg':
-          write_gg2gg(args, pt, eta, phi)
-       
+       write_event(args, pt, eta, phi)
 
     print ''
     print 'Event generation completed.'

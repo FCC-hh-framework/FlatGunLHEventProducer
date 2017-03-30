@@ -27,5 +27,5 @@ For instructions, type:
 
 For instance:
 ```
- ./flatGunLHEventProducer.py --process gg2gg --ptmin 1 --ptmax 10000 --etamin -5 --etamax 5 --N 1000 --seed 1233 --output events.lhe --nolog --ecm 100000
+ ./flatGunLHEventProducer.py --pdg 21 --ptmin 1 --ptmax 10000 --etamin -5 --etamax 5 --N 1000 --seed 1233 --output events.lhe --nolog --ecm 100000
 ```
