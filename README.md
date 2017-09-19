@@ -45,6 +45,5 @@ python flatGunLHEventProducer.py \
   --log \
   --maxFail 100 \
   --seed 123 \
-  --output my_dijet.lhe \
-  /
+  --output my_dijet.lhe
 ```
