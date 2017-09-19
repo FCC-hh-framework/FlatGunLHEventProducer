@@ -21,7 +21,7 @@ def print_params(args):
     print 'pmin       : ', args.pmin
     print 'etamin     : ', args.etamin
     print 'etamax     : ', args.etamax
-    print 'Nevents    : ', args.N
+    print 'nevts      : ', args.nevts
     print 'Seed       : ', args.seed
     print 'Max Fail   : ', args.maxFail
     print 'flat log   : ', args.log
@@ -150,13 +150,13 @@ if __name__=="__main__":
     
     parser = argparse.ArgumentParser()
     parser.add_argument("--pdg", nargs='+', type=int)
+    parser.add_argument('--guntype', dest='guntype', help='pt or e gun. The parameters pmin(max) are then interpreted as ptmin(max) or emin(max) depending on the specified gunmode', default='pt')
     parser.add_argument("--pmin", type=float, help="minimum pt/e [GeV] (default: 1.)", default=1.)
     parser.add_argument("--pmax", type=float, help="maximum pt/e [GeV] (default: 50000.)", default=50000.)
     parser.add_argument("--etamin", type=float, help="minimum eta (default: -2.5)", default=-6.)
     parser.add_argument("--etamax", type=float, help="maximum eta (default: 2.5)", default=6.)
-    parser.add_argument('--guntype', dest='guntype', help='pt or e gun.', default='pt')
     parser.add_argument("--ecm,", dest='ecm', type=float, help="center of mass energy (default: 13000)", default=13000)
-    parser.add_argument("--N", type=int, help="number of events to generate (default: 1000)", default=1000)
+    parser.add_argument("--nevts", type=int, help="number of events to generate (default: 1000)", default=1000)
     parser.add_argument("--maxFail", type=int, help="maximum number of phase space failure (default: 100)", default=100)
     parser.add_argument("--seed", type=int, help="random seed (default uses cpu time)", default=None)
     parser.add_argument('--log', dest='log', help="flat in log pt (default: yes)", action='store_true')
@@ -196,7 +196,7 @@ if __name__=="__main__":
 
     # start event loop
     nfail = 0
-    while count < args.N:
+    while count < args.nevts:
        
        phi = random.uniform(0., math.pi)
        eta = random.uniform(args.etamin, args.etamax)
