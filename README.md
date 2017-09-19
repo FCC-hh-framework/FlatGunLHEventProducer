@@ -33,17 +33,18 @@ For instance, to produce 1k di-jet (equal mixing of quarks and gluons) events, a
 GeV < pT < 10 TeV, in -4.0 < eta < 4.0, in flat log pT mode, type:
 
 ```
-python flatGunLHEventProducer.py
-  --pdg [1,2,3,4,5,21] \
+python flatGunLHEventProducer.py \
+  --pdg 1 21 \
   --guntype pt \
   --nevts 1000 \
   --ecm 100000. \
   --pmin 100. \
   --pmax 10000. \
-  --etamin -4. \
-  --etamax 4. \
-  --logpt \
+  --etamin -4.0 \
+  --etamax 4.0 \
+  --log \
   --maxFail 100 \
   --seed 123 \
   --output my_dijet.lhe \
+  /
 ```
