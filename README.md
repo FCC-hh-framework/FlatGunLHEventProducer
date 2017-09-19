@@ -42,6 +42,7 @@ python flatGunLHEventProducer.py
   --pmax 10000. \
   --etamin -4. \
   --etamax 4. \
+  --logpt \
   --maxFail 100 \
   --seed 123 \
   --output my_dijet.lhe \
