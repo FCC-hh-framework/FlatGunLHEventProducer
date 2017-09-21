@@ -23,7 +23,6 @@ def print_params(args):
     print 'etamax     : ', args.etamax
     print 'nevts      : ', args.nevts
     print 'Seed       : ', args.seed
-    print 'Max Fail   : ', args.maxFail
     print 'flat log   : ', args.log
     print 'output     : ', args.output
 #__________________________________________________________
@@ -157,7 +156,6 @@ if __name__=="__main__":
     parser.add_argument("--etamax", type=float, help="maximum eta (default: 2.5)", default=6.)
     parser.add_argument("--ecm,", dest='ecm', type=float, help="center of mass energy (default: 13000)", default=13000)
     parser.add_argument("--nevts", type=int, help="number of events to generate (default: 1000)", default=1000)
-    parser.add_argument("--maxFail", type=int, help="maximum number of phase space failure (default: 100)", default=100)
     parser.add_argument("--seed", type=int, help="random seed (default uses cpu time)", default=None)
     parser.add_argument('--log', dest='log', help="flat in log pt (default: yes)", action='store_true')
     parser.add_argument('--nolog', dest='log', help="flat in pt (default: false)", action='store_false')
@@ -216,25 +214,28 @@ if __name__=="__main__":
           pt = e/math.cosh(eta)
 
        # write event corresponding to required process
-       if e > ebeam:
-          nfail += 1
-
-       elif nfail < args.maxFail:
+       if e <= ebeam:
           write_event(args, pt, eta, phi)
           count += 1
           if (count+1)%500 == 0:
              print ' ... processed {} events ...'.format(count+1)
-
        else:
-          print 'Too many events fail phase space requirements. To fix this either increase center of mass/ apply looser cuts/ increase maxFail parameter'
+          nfail += 1
+
+       print nfail
+       if nfail > 10*args.nevts:
+          print 'Too many events fail phase space requirements. Usually means ptmax is too high given eta cuts.'
+          print 'To fix this either increase center of mass/ change cuts.'
+          out.close()
+          os.system('rm {}'.format(args.output))
           sys.exit(0)
+
+    out = open(args.output, "a")
+    out.write('</LesHouchesEvents>\n')
+    out.close()
 
     print ''
     print 'Event generation completed.'
     print 'Output file:'
     print '{}'.format(os.path.abspath(args.output))
    
-
-    out = open(args.output, "a")
-    out.write('</LesHouchesEvents>\n')
-    out.close()
