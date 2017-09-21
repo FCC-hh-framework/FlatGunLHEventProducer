@@ -10,12 +10,9 @@ The following particle production is supported:
 - light quarks (u,d,s)
 - heavy quarks (c,b,t)
 - leptons (e, ve, mu, vm, tau, vtau)
-- EWK bosons (photon/W/Z/H)
+- bosons (photon/W/Z/H)
 
 **NOTE: This script is intended to be used for detector studies only, not for physics.**
-
-[]() Local submission
-----------------------
 
 This script requires at least **Python 2.7**.
 If you are on lxplus, you can type:
@@ -24,6 +21,10 @@ If you are on lxplus, you can type:
 source /cvmfs/sft.cern.ch/lcg/releases/LCG_87/Python/2.7.10/x86_64-slc6-gcc49-opt/Python-env.sh
 
 ```
+
+[]() Local submission
+----------------------
+
 
 For instructions, type:
 ```
