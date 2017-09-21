@@ -14,8 +14,8 @@ The following particle production is supported:
 
 **NOTE: This script is intended to be used for detector studies only, not for physics.**
 
-[]() General instructions
---------------------------
+[]() Local submission
+----------------------
 
 This script requires at least **Python 2.7**.
 If you are on lxplus, you can type:
@@ -47,3 +47,26 @@ python flatGunLHEventProducer.py \
   --seed 123 \
   --output my_dijet.lhe
 ```
+
+[]() LSF submission
+-----------------------
+
+To generate LHE files using LSF queue, you can use script ```submitLheJobs.py``` that uses the additional parameters ```--dir```, ```--queue```, ```--njobs```.
+Note that in this case the ```--nevts``` becomes the number of events per job and instead of specifying an outfile name
+you are now required to specify an output directory:
+
+```
+python submitLheJobs.py \
+  --pdg 1 21 \
+  --guntype pt \
+  --nevts 1000 \
+  --ecm 100000. \
+  --pmin 100. \
+  --pmax 10000. \
+  --etamin -4.0 \
+  --etamax 4.0 \
+  --log \
+  --maxFail 100 \
+  --dir outDir \
+  --queue 8nm \
+  --njobs 10 \
