@@ -39,11 +39,10 @@ python flatGunLHEventProducer.py \
   --nevts 1000 \
   --ecm 100000. \
   --pmin 100. \
-  --pmax 10000. \
-  --etamin -4.0 \
-  --etamax 4.0 \
+  --pmax 1000. \
+  --etamin -2.5 \
+  --etamax 2.5 \
   --log \
-  --maxFail 100 \
   --seed 123 \
   --output my_dijet.lhe
 ```
@@ -51,7 +50,7 @@ python flatGunLHEventProducer.py \
 []() LSF submission
 -----------------------
 
-To generate LHE files using LSF queue, you can use script ```submitLheJobs.py``` that uses the additional parameters ```--dir```, ```--queue```, ```--njobs```.
+To generate LHE files using LSF queue, you can use the script ```submitLheJobs.py``` that uses the additional parameters ```--dir```, ```--queue```, ```--njobs```.
 Note that in this case the ```--nevts``` becomes the number of events per job and instead of specifying an outfile name
 you are now required to specify an output directory:
 
@@ -62,11 +61,10 @@ python submitLheJobs.py \
   --nevts 1000 \
   --ecm 100000. \
   --pmin 100. \
-  --pmax 10000. \
-  --etamin -4.0 \
-  --etamax 4.0 \
+  --pmax 1000. \
+  --etamin -2.5 \
+  --etamax 2.5 \
   --log \
-  --maxFail 100 \
   --dir outDir \
   --queue 8nm \
   --njobs 10 \
