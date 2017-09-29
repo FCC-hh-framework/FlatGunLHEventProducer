@@ -1,7 +1,18 @@
 #!/usr/bin/env python
 import os, sys, subprocess
 import argparse 
+import commands
+import time
 
+#____________________________________________________________________________________________________________
+### processing the external os commands
+def processCmd(cmd, quite = 0):
+    status, output = commands.getstatusoutput(cmd)
+    if (status !=0 and not quite):
+        print 'Error in processing command:\n   ['+cmd+']'
+        print 'Output:\n   ['+output+'] \n'
+    return output
+#_____________________________________________________________________________________________________________
 def main():
 
     parser = argparse.ArgumentParser()
@@ -74,9 +85,12 @@ python {}/flatGunLHEventProducer.py \
     dummyscript = dummyscript.replace('DUMMYETAMIN', str(args.etamin))
     dummyscript = dummyscript.replace('DUMMYETAMAX', str(args.etamax))
     dummyscript = dummyscript.replace('DUMMYLOG', log_str)
-    
+
+    print '[Submitting jobs]'
+    jobCount=0
     for job in xrange(args.njobs):
        
+       print 'Submitting job '+str(job)+' out of '+str(args.njobs)
        basename = os.path.basename(output_dir) + '_'+str(job)
        outputFile = output_dir+'/'+basename+'.lhe'
 
@@ -85,15 +99,23 @@ python {}/flatGunLHEventProducer.py \
        script = script.replace('DUMMYOUTPUT', outputFile)
 
        fscript = output_dir+'/cfg/'+basename
-       with open(fscript, "w") as f:
+       with open('script.sh', "w") as f:
           f.write(script)
-       os.system('chmod u+x '+fscript)
+       processCmd('chmod u+x script.sh')
+       processCmd('mv script.sh {}'.format(fscript))
 
        cmd = 'bsub -o '+output_dir+'/std/'+basename +'.out -e '+output_dir+'/std/'+basename +'.err -q '+args.queue
        cmd +=' -J '+basename+' "'+fscript+'" '
        
        # submitting jobs
-       os.system(cmd)
+       output = processCmd(cmd)
+       while ('error' in output):
+           time.sleep(1.0);
+           output = processCmd(cmd)
+           if ('error' not in output):
+               print 'Submitted after retry - job '+str(jobCount+1)
+
+       jobCount += 1
 
 #_______________________________________________________________________________________
 if __name__ == "__main__":
