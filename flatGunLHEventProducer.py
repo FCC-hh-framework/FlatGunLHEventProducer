@@ -222,7 +222,6 @@ if __name__=="__main__":
        else:
           nfail += 1
 
-       print nfail
        if nfail > 10*args.nevts:
           print 'Too many events fail phase space requirements. Usually means ptmax is too high given eta cuts.'
           print 'To fix this either increase center of mass/ change cuts.'
@@ -234,8 +233,10 @@ if __name__=="__main__":
     out.write('</LesHouchesEvents>\n')
     out.close()
 
+    os.system('gzip {}'.format(args.output))
+
     print ''
     print 'Event generation completed.'
     print 'Output file:'
-    print '{}'.format(os.path.abspath(args.output))
+    print '{}'.format(os.path.abspath(args.output +'.gz'))
    
